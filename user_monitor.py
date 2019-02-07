@@ -1,8 +1,4 @@
-
 # coding: utf-8
-
-# In[6]:
-
 
 import pyscreenshot
 from time import strftime, sleep
@@ -10,15 +6,11 @@ import os, sys
 import pandas as pd
 
 
-# In[7]:
-
 
 def get_screenshot():
     im = pyscreenshot.grab()
     im.save(os.getcwd()+'/files/'+strftime('%d %b%Y %H-%M.png'))
 
-
-# In[8]:
 
 
 def get_ps_top_processes() -> pd.DataFrame:
@@ -39,8 +31,6 @@ def get_ps_top_processes() -> pd.DataFrame:
     return df
 
 
-# In[9]:
-
 
 # preprocessing df of top processes paramsgetTopProcesses
 def _transform_data(df) -> pd.DataFrame:
@@ -55,8 +45,6 @@ def _transform_data(df) -> pd.DataFrame:
     return tmp
 
 
-# In[10]:
-
 
 def _add_results_to_stats(df):
     result = pd.read_csv('statistics.csv')
@@ -66,8 +54,6 @@ def _add_results_to_stats(df):
     result.to_csv('statistics.csv', index=True)
 
 
-# In[11]:
-
 
 def monitor(time):
     try:
@@ -76,10 +62,18 @@ def monitor(time):
             _add_results_to_stats(_transform_data(get_ps_top_processes()))
             sleep(time)       
     except KeyboardInterrupt:
-        print('interrupted')
+        print('Interrupted by user.')
 
 
-# In[12]:
+
+def _init_files_dir():
+    if not os.path.exists(os.getcwd()+'/files'):
+        try:
+            original_umask = os.umask(0)
+            os.makedirs(os.getcwd()+'/files', 0o777)
+        finally:
+            os.umask(original_umask)
+    
 
 
 def _init_statistics_file():
@@ -94,17 +88,19 @@ def _init_statistics_file():
         pass
 
 
-# In[13]:
-
 
 def main_function(interval=60):
+    _init_files_dir()
     _init_statistics_file()
     monitor(interval)
 
 
-# In[15]:
-
 
 if __name__ == '__main__':
-    main_function(int(float(sys.argv[1])))    
-
+    try:
+        interval = int(float(sys.argv[1]))
+        print('Starting user_monitor with {} sec interval'.format(interval))
+        main_function(interval)
+    except IndexError:
+        print('Starting user_monitor with 60 sec interval')
+        main_function()
