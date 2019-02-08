@@ -9,7 +9,7 @@ import pandas as pd
 
 def get_screenshot():
     im = pyscreenshot.grab()
-    im.save(os.getcwd()+'/files/'+strftime('%d %b%Y %H-%M.png'))
+    im.save(os.getcwd()+'/screenshots/'+strftime('%d %b%Y %H-%M.png'))
 
 
 
@@ -86,7 +86,6 @@ def _init_statistics_file():
         ser.to_csv('statistics.csv', index=True)
     else:
         pass
-
 
 
 def main_function(interval=60):
