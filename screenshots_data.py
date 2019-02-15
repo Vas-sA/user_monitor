@@ -58,7 +58,7 @@ def collect_screenshots_logos_data() -> pd.DataFrame:
 
 def main_function(filename='screenshots_data'):
     data = collect_screenshots_logos_data()
-    data.to_csv(filename+'csv')
+    data.to_csv(filename+'.csv')
 
 
 # In[ ]:
